@@ -13,6 +13,8 @@ Both skills need a MindCloud API key. Get one at [app.mindcloud.co/user/api-keys
 
 ## Install
 
+Pick one install path. The skills CLI copies editable skill files into your project; the Claude Code plugin is a managed bundle that updates when we ship. Installing both gives you every skill twice.
+
 With the [skills CLI](https://github.com/vercel-labs/skills) (works with every supported agent):
 
 ```bash

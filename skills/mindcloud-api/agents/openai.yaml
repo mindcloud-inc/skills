@@ -1,0 +1,3 @@
+interface:
+  display_name: "MindCloud API"
+  short_description: "Run and debug MindCloud workflows, manage the account"
