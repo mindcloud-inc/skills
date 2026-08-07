@@ -1,0 +1,14 @@
+{
+  "name": "mindcloud-skills",
+  "description": "Read and write data in 3,000+ business apps through the MindCloud Universal API, and manage MindCloud workflows, runs, connections, and keys.",
+  "version": "1.0.0",
+  "author": {
+    "name": "MindCloud",
+    "url": "https://mindcloud.co"
+  },
+  "homepage": "https://github.com/mindcloud-inc/skills",
+  "repository": "https://github.com/mindcloud-inc/skills",
+  "license": "MIT",
+  "keywords": ["mindcloud", "integrations", "api", "slack", "netsuite", "shopify", "quickbooks", "hubspot"],
+  "skills": ["./skills/mindcloud-universal-api", "./skills/mindcloud-api"]
+}

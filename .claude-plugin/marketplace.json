@@ -1,0 +1,26 @@
+{
+  "name": "mindcloud",
+  "owner": {
+    "name": "MindCloud",
+    "url": "https://mindcloud.co"
+  },
+  "metadata": {
+    "description": "MindCloud skills: one REST API for 3,000+ business apps, plus MindCloud account management.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "mindcloud-skills",
+      "source": "./",
+      "description": "Read and write data in 3,000+ business apps through the MindCloud Universal API, and manage MindCloud workflows, runs, connections, and keys.",
+      "author": {
+        "name": "MindCloud",
+        "url": "https://mindcloud.co"
+      },
+      "homepage": "https://github.com/mindcloud-inc/skills",
+      "license": "MIT",
+      "keywords": ["mindcloud", "integrations", "api", "slack", "netsuite", "shopify", "quickbooks", "hubspot"],
+      "skills": ["./skills/mindcloud-universal-api", "./skills/mindcloud-api"]
+    }
+  ]
+}
