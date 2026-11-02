@@ -1,6 +1,6 @@
 ---
 name: mindcloud-universal-api
-description: Read and write data in 3,000+ business apps (Slack, NetSuite, Shopify, QuickBooks, HubSpot, and more) through one REST API. Use when the user asks you to fetch or change data in any external app. Covers app discovery, action schemas, lookup resolution, and running actions with curl. Requires a MindCloud API key.
+description: Read and write data in 3,400+ business apps (Slack, NetSuite, Shopify, QuickBooks, HubSpot, and more) through one REST API. Use when the user asks you to fetch or change data in any external app. Covers app discovery, action schemas, lookup resolution, and running actions with curl. Requires a MindCloud API key.
 homepage: https://mindcloud.co/docs/universal/rest/home/latest
 metadata: {"source": "https://github.com/mindcloud-inc/skills/tree/main/skills/mindcloud-universal-api", "requires": {"env": ["MINDCLOUD_API_KEY"]}}
 ---
@@ -11,7 +11,7 @@ One REST API for every app MindCloud supports. You discover an app, read an acti
 
 - Base URL: `https://connect.mindcloud.co`
 - Auth: send `Authorization: Bearer $MINDCLOUD_API_KEY` on every request.
-- Every response is JSON: `{"success": true, "data": ...}` or `{"success": false, "error": {"code", "message"}}`.
+- Every response is JSON: `{"success": true, "data": ...}` or `{"success": false, "error": {"code", "message", "details"}}`. `error.code` is a small fixed set; `error.details.reason` names the specific cause.
 - Rate limits per key: 240 reads/min, 60 writes/min. Watch `X-RateLimit-Remaining`; on 429, wait `Retry-After` seconds.
 
 ## Setup
@@ -42,7 +42,7 @@ Stop and send the user to the right page instead of retrying:
 1. Never guess an `appSlug` or `actionSlug`. Discover them first (steps 1 and 2 below).
 2. Read the action schema before you run an action. It tells you the required arguments.
 3. Never guess provider IDs (channel IDs, customer IDs). Resolve them with the lookup endpoint.
-4. Send only documented query parameters. Unknown parameters return `400 INVALID_QUERY` naming the bad one.
+4. Send only documented parameters and body fields. Unknown ones return `400 VALIDATION_FAILED` naming the bad one, with the accepted names in `error.details.accepted`.
 5. The run endpoint takes a JSON body only. It accepts no query parameters.
 6. Read actions are safe. Before you run an action that creates, updates, or deletes data, confirm with the user.
 
@@ -57,7 +57,7 @@ curl -s "https://connect.mindcloud.co/v2/universal/apps?q=slack" \
   -H "Authorization: Bearer $MINDCLOUD_API_KEY"
 ```
 
-Returns `slug`, `id`, `publishedVersion`, `actionsTotal`, and a preview of action slugs per app. You can also pass `actionQ=send a message` to describe your intent; when one action clearly matches, the response includes a `suggestedAction`.
+Returns `slug`, `id`, `publishedVersion`, `actionsTotal`, and a preview of action slugs per app. You can also pass `actionQ=send a message` to describe your intent; when one action clearly matches, the response includes `meta.suggestedAction`.
 
 **2. List the app's actions:**
 
@@ -84,7 +84,7 @@ curl -s "https://connect.mindcloud.co/v2/universal/apps/slack/actions/send-messa
   -H "Authorization: Bearer $MINDCLOUD_API_KEY"
 ```
 
-Check `data.status`. When it is `resolved`, use `data.selected.value`. When it is `ambiguous`, pick from `data.candidates` or ask the user.
+Check `data.status`. When it is `resolved`, use `data.selected.value`. When it is `ambiguous`, pick from `data.candidates` or ask the user. `notFound` means nothing matched `q`.
 
 **5. Run the action:**
 
@@ -99,13 +99,21 @@ Action arguments go inside `arguments`. Response controls (`fields`, `limit`, `o
 
 ## Endpoint reference
 
-| Method | Path | Purpose |
-|---|---|---|
-| GET | `/v2/universal/apps` | Search apps. Params: `q`, `actionQ`, `fields`, `limit` (1-100), `offset` |
-| GET | `/v2/universal/apps/{appSlug}/actions` | List actions. Params: `q`, `verbosity`, `includeArguments`, `fields`, `limit`, `offset`, `version` |
-| GET | `/v2/universal/apps/{appSlug}/actions/{actionSlug}` | Full action schema. Params: `fields`, `version` |
-| GET | `/v2/universal/apps/{appSlug}/actions/{actionSlug}/lookups/{argumentKey}` | Resolve an argument value. Params: `q`, `connectionId`, `limit` (1-200), `offset`, `version` |
-| POST | `/v2/universal/apps/{appSlug}/actions/{actionSlug}/run` | Run the action. JSON body only |
+<!-- BEGIN GENERATED ENDPOINT REFERENCE: edit the endpoint docs in projects/publicApi/v2, then run npm run docs:website:generate there -->
+
+Each endpoint links to its full docs: parameters, body, response fields, and errors.
+
+### Universal
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [List Universal Apps](https://mindcloud.co/docs/api/rest/actions/list-universal-apps) | GET `/v2/universal/apps` | Any key | Find published apps with Universal API actions. |
+| [List Universal Actions](https://mindcloud.co/docs/api/rest/actions/list-universal-actions) | GET `/v2/universal/apps/{appSlug}/actions` | Any key | List the published actions for one app. |
+| [Get Universal Action](https://mindcloud.co/docs/api/rest/actions/get-universal-action) | GET `/v2/universal/apps/{appSlug}/actions/{actionSlug}` | Any key | Get one published action schema, including its arguments, response fields, and supported controls. |
+| [Resolve Universal Lookup](https://mindcloud.co/docs/api/rest/actions/resolve-universal-lookup) | GET `/v2/universal/apps/{appSlug}/actions/{actionSlug}/lookups/{argumentKey}` | `universal:read` | Resolve choices for one action argument, such as finding Slack channels before sending a message. |
+| [Run Universal Action](https://mindcloud.co/docs/api/rest/actions/run-universal-action) | POST `/v2/universal/apps/{appSlug}/actions/{actionSlug}/run` | `universal:read`, `universal:create`, `universal:update`, `universal:delete`: the one matching the action's operation | Run one published Universal API action through a connection. |
+
+<!-- END GENERATED ENDPOINT REFERENCE -->
 
 `version` defaults to `latest` everywhere; omit it unless you need an older app version.
 
@@ -123,21 +131,24 @@ Use the connection's `id` as `connectionId` in the run body: `{"connectionId": "
 
 ## Errors
 
-| Code | Meaning | What to do |
-|---|---|---|
-| `INVALID_QUERY` | Bad or unknown parameter | The message names the accepted parameters; fix and retry |
-| `UNIVERSAL_APP_NOT_FOUND` | Unknown `appSlug` | Re-run app discovery with `q` |
-| `UNIVERSAL_ACTION_NOT_FOUND` | Unknown `actionSlug` | Re-run action discovery with `q` |
-| `UNIVERSAL_ACTION_SLUG_CONFLICT` | Slug matches several actions | Response lists them; pick one and retry |
-| `NO_CONNECTION` | The app has no connection | Send the user to https://app.mindcloud.co/credentials to connect it |
-| `CONNECTION_REQUIRED` | Several connections, no default | List connections (above) and pass `connectionId` |
-| `API_KEY_ACCESS_DENIED` | Key tier too low for this route | Use a `run_workflows` or `full_access` key |
-| `RATE_LIMITED` | Over the per-key budget | Wait `Retry-After` seconds, then retry |
-| `RUN_UNIVERSAL_APP_ACTION_FAILED` | The provider call failed | The message carries the provider error; adjust arguments |
+`error.code` says what kind of failure it is; `error.details.reason` says which.
+
+| Code                                          | Reason                                                                 | What to do                                                                                                                            |
+| --------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `VALIDATION_FAILED`                           | `UNKNOWN_PARAM`, `UNKNOWN_BODY_KEY`, ...                               | `details.accepted` lists the accepted names; fix and retry                                                                            |
+| `NOT_FOUND`                                   | `UNIVERSAL_APP_NOT_FOUND`                                              | Re-run app discovery with `q`                                                                                                         |
+| `NOT_FOUND`                                   | `UNIVERSAL_ACTION_NOT_FOUND`                                           | Re-run action discovery with `q`                                                                                                      |
+| `CONFLICT`                                    | `UNIVERSAL_ACTION_SLUG_CONFLICT`                                       | Slug matches several actions; pick one and retry                                                                                      |
+| `VALIDATION_FAILED`                           | `NO_CONNECTION`                                                        | Send the user to https://app.mindcloud.co/credentials to connect it                                                                   |
+| `VALIDATION_FAILED`                           | `CONNECTION_REQUIRED`                                                  | List connections (above) and pass `connectionId`                                                                                      |
+| `FORBIDDEN`                                   | `API_KEY_ACCESS_DENIED`                                                | Use a `run_workflows` or `full_access` key                                                                                            |
+| `RATE_LIMITED`                                | none                                                                   | Wait `Retry-After` seconds, then retry                                                                                                |
+| `PROVIDER_ERROR`                              | the provider's own code                                                | The app itself refused or failed (502); the message carries its error and `details.provider.status` its HTTP status; adjust arguments |
+| `NOT_FOUND`, `FORBIDDEN`, `VALIDATION_FAILED` | `CONNECTION_NOT_FOUND`, `CONNECTION_APP_MISMATCH`, `INVALID_OPERATION` | MindCloud refused the run before calling the app; fix the connection or the request                                                   |
 
 ## Learn more
 
 - Quickstart: https://mindcloud.co/docs/universal/rest/home/latest/introduction/quickstart
 - Per-app action docs with runnable examples: https://mindcloud.co/docs/universal/rest/home/latest/introduction/browse-apps
 - Machine-readable spec (all v2 routes, no auth needed): https://connect.mindcloud.co/v2/openapi.json
-- Managing workflows, runs, members, and keys: https://github.com/mindcloud-inc/skills/tree/main/skills/mindcloud-api
+- Building and managing workflows, runs, members, and keys: https://mindcloud.co/skills/mindcloud-api/SKILL.md

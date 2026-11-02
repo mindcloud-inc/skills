@@ -5,14 +5,14 @@
     "url": "https://mindcloud.co"
   },
   "metadata": {
-    "description": "MindCloud skills: one REST API for 3,000+ business apps, plus MindCloud account management.",
-    "version": "1.0.0"
+    "description": "MindCloud skills: one REST API for 3,400+ business apps, plus MindCloud account management.",
+    "version": "1.1.0"
   },
   "plugins": [
     {
       "name": "mindcloud-skills",
       "source": "./",
-      "description": "Read and write data in 3,000+ business apps through the MindCloud Universal API, and manage MindCloud workflows, runs, connections, and keys.",
+      "description": "Read and write data in 3,400+ business apps through the MindCloud Universal API, and build and manage MindCloud workflows, runs, connections, and keys.",
       "author": {
         "name": "MindCloud",
         "url": "https://mindcloud.co"

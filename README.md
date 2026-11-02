@@ -6,8 +6,8 @@ Agent skills that let coding agents (Claude Code, Codex, Cursor, and [70+ more](
 
 | Skill | What it does |
 |---|---|
-| [mindcloud-universal-api](skills/mindcloud-universal-api) | Read and write data in 3,000+ business apps (Slack, NetSuite, Shopify, QuickBooks, HubSpot, and more) through one REST API. |
-| [mindcloud-api](skills/mindcloud-api) | Manage a MindCloud account: run and debug workflows, manage connections, members, roles, environments, and API keys. |
+| [mindcloud-universal-api](skills/mindcloud-universal-api) | Read and write data in 3,400+ business apps (Slack, NetSuite, Shopify, QuickBooks, HubSpot, and more) through one REST API. |
+| [mindcloud-api](skills/mindcloud-api) | Manage a MindCloud account: build, run, and debug workflows, manage connections, members, roles, environments, and API keys. |
 
 Both skills need a MindCloud API key. Get one at [app.mindcloud.co/user/api-keys](https://app.mindcloud.co/user/api-keys) and export it as `MINDCLOUD_API_KEY`.
 
