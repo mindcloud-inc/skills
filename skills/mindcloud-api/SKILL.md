@@ -184,7 +184,7 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | [Delete Workflow Trigger](https://mindcloud.co/docs/api/rest/actions/delete-workflow-trigger) | DELETE `/v2/workflows/{workflowId}/triggers/{triggerId}` | `workflow:edit` | Remove a trigger from the workflow's draft. |
 | [Get Workflow Inputs](https://mindcloud.co/docs/api/rest/actions/get-workflow-inputs) | GET `/v2/workflows/{workflowId}/inputs` | `workflow:view` | Read what a run of the workflow takes, where the editor keeps it. |
 | [Update Workflow Inputs](https://mindcloud.co/docs/api/rest/actions/update-workflow-inputs) | PUT `/v2/workflows/{workflowId}/inputs` | `workflow:edit` | Replace a whole list, as the editor stores it; a list not sent stays as it is. |
-| [Validate Workflow](https://mindcloud.co/docs/api/rest/actions/validate-workflow) | POST `/v2/workflows/{workflowId}/validate` | `workflow:view` | Check the workflow's draft the way publishing will: errors block publishing (an incomplete schedule, a broken graph), warnings do not (a step not set up yet, a Code step reading an input key no input answers). |
+| [Validate Workflow](https://mindcloud.co/docs/api/rest/actions/validate-workflow) | POST `/v2/workflows/{workflowId}/validate` | `workflow:view` | Check the workflow's draft the way publishing will: errors block publishing (an incomplete schedule, a broken graph), warnings do not (a step not set up yet, a Map step reading an input key no input answers). |
 | [Publish Workflow](https://mindcloud.co/docs/api/rest/actions/publish-workflow) | POST `/v2/workflows/{workflowId}/publish` | `workflow:edit` | Make the draft the version that runs. |
 | [Restore Workflow Version](https://mindcloud.co/docs/api/rest/actions/restore-workflow-version) | POST `/v2/workflows/{workflowId}/versions/{version}/restore` | `workflow:edit` | Copy a saved version into the draft, replacing it. |
 | [List Workflow Tags](https://mindcloud.co/docs/api/rest/actions/list-workflow-tags) | GET `/v2/workflow-tags` | `workflow:view` | The company's workflow tags. |
@@ -196,7 +196,7 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 
 | Endpoint | Request | Permission | What it does |
 | --- | --- | --- | --- |
-| [List Connections](https://mindcloud.co/docs/api/rest/actions/list-connections) | GET `/v2/connections` | `credential:view` | See every connection in your company and whether it still works. |
+| [List Connections](https://mindcloud.co/docs/api/rest/actions/list-connections) | GET `/v2/connections` | `credential:view` | See every connection in your company and whether it still works, each app's default first. |
 | [Get Connection](https://mindcloud.co/docs/api/rest/actions/get-connection) | GET `/v2/connections/{connectionId}` | `credential:view` | Check one connection's health, expiry, and metadata. |
 | [Test Connection](https://mindcloud.co/docs/api/rest/actions/test-connection) | POST `/v2/connections/{connectionId}/test` | `credential:edit` | Check a connection against the provider it signs into. |
 | [Delete Connection](https://mindcloud.co/docs/api/rest/actions/delete-connection) | DELETE `/v2/connections/{connectionId}` | `credential:delete` | Delete a connection, revoking it with the provider first when the app supports that. |
