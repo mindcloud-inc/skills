@@ -10,7 +10,8 @@ metadata: {"source": "https://github.com/mindcloud-inc/skills/tree/main/skills/m
 REST API for a MindCloud company account: building and running workflows, runs, connections, members, roles, environments, usage, and API keys. To call third-party apps (Slack, NetSuite, Shopify) directly, use the Universal API skill instead: https://mindcloud.co/skills/mindcloud-universal-api/SKILL.md
 
 - Base URL: `https://connect.mindcloud.co`
-- Auth: send `Authorization: Bearer $MINDCLOUD_API_KEY` on every request. A key belongs to one company and acts on it. To act on a child organization of that company, add `X-Company-Id: <childCompanyId>`: https://mindcloud.co/docs/api/rest/introduction/child-organizations
+- Auth: send `Authorization: Bearer $MINDCLOUD_API_KEY` on every request. A key belongs to one organization and acts there unless `X-Company-Id` names another it can reach: its child organizations, and, with "Use this key across all of your organizations" on, every organization its creator can open in the app: https://mindcloud.co/docs/api/rest/introduction/organizations
+- Organizations: when the user names an organization (or says "in the X org"), first find it with `GET /v2/companies?name[contains]=<name>&fields=id,name,access`, then send its `id` as `X-Company-Id` on EVERY call. If it is not listed, or is `approvalRequired`, stop and tell the user; if it is `staffLimited`, only the parts of MindCloud in `staffApprovedApps`, and endpoints both parts share, work there. Never fall back to the key's own organization. Each REST response's `X-Company-Id` header names the organization it acted in: check it.
 - Every response is JSON: `{"success": true, "data": ...}` or `{"success": false, "error": {"code", "message", "details"}}`. `error.code` is a small fixed set; `error.details.reason` names the specific cause. Lists add `meta.pagination` with `totalCount`, `hasNextPage`, `hasPreviousPage`.
 - Rate limits per key: 240 reads/min, 60 writes/min. On 429, wait `Retry-After` seconds.
 
@@ -259,7 +260,7 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 
 | Endpoint | Request | Permission | What it does |
 | --- | --- | --- | --- |
-| [List Companies](https://mindcloud.co/docs/api/rest/actions/list-companies) | GET `/v2/companies` | `company:view` | See your company's profile, plan, and member count. |
+| [List Companies](https://mindcloud.co/docs/api/rest/actions/list-companies) | GET `/v2/companies` | `company:view` | Find the organization to work in: every organization your API key can act in, searchable by name (name[contains]=acme), with how the key reaches it. |
 | [Get Company](https://mindcloud.co/docs/api/rest/actions/get-company) | GET `/v2/companies/{companyId}` | `company:view` | See your company in full: its region, parent organization, how many members and roles it has, and whether domain discovery and Embedded are on. |
 | [Update Company](https://mindcloud.co/docs/api/rest/actions/update-company) | PUT `/v2/companies/{companyId}` | `company:edit` | Change your company name, description, timezone, or logo, or turn domain discovery on or off. |
 | [Leave Parent Organization](https://mindcloud.co/docs/api/rest/actions/leave-parent) | POST `/v2/companies/{companyId}/leave-parent` | `company:parent:manage` | Stop being a child organization. |

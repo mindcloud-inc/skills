@@ -11,6 +11,7 @@ One REST API for every app MindCloud supports. You discover an app, read an acti
 
 - Base URL: `https://connect.mindcloud.co`
 - Auth: send `Authorization: Bearer $MINDCLOUD_API_KEY` on every request.
+- Organizations: calls act in the key's own organization. To act in another one the key can reach, find it with `GET /v2/companies?name[contains]=<name>&fields=id,name,access` and send its `id` as `X-Company-Id` on every call; if it is not listed, stop and say so, never fall back to the key's own: https://mindcloud.co/docs/api/rest/introduction/organizations
 - Every response is JSON: `{"success": true, "data": ...}` or `{"success": false, "error": {"code", "message", "details"}}`. `error.code` is a small fixed set; `error.details.reason` names the specific cause.
 - Rate limits per key: 240 reads/min, 60 writes/min. Watch `X-RateLimit-Remaining`; on 429, wait `Retry-After` seconds.
 
