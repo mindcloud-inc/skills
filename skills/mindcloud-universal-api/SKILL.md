@@ -72,7 +72,7 @@ Compact by default, with required arguments included. Add `verbosity=full` or `i
 **3. Get the action schema:**
 
 ```bash
-curl -s "https://connect.mindcloud.co/v2/universal/apps/slack/actions/send-message" \
+curl -s "https://connect.mindcloud.co/v2/universal/apps/slack/actions/send-channel-message" \
   -H "Authorization: Bearer $MINDCLOUD_API_KEY"
 ```
 
@@ -81,16 +81,16 @@ Returns `requiredArguments`, `optionalArguments`, `responseFields`, and `support
 **4. Resolve lookup arguments.** When an argument needs a provider ID, resolve it by name instead of guessing:
 
 ```bash
-curl -s "https://connect.mindcloud.co/v2/universal/apps/slack/actions/send-message/lookups/channel?q=general" \
+curl -s "https://connect.mindcloud.co/v2/universal/apps/slack/actions/send-channel-message/lookups/channel?q=general" \
   -H "Authorization: Bearer $MINDCLOUD_API_KEY"
 ```
 
-Check `data.status`. When it is `resolved`, use `data.selected.value`. When it is `ambiguous`, pick from `data.candidates` or ask the user. `notFound` means nothing matched `q`.
+Check `data.status`. When it is `resolved`, use `data.selected.value`. When it is `ambiguous`, pick from `data.candidates` or ask the user. `notFound` means nothing matched `q` (`search` is accepted as the same input).
 
 **5. Run the action:**
 
 ```bash
-curl -s -X POST "https://connect.mindcloud.co/v2/universal/apps/slack/actions/send-message/run" \
+curl -s -X POST "https://connect.mindcloud.co/v2/universal/apps/slack/actions/send-channel-message/run" \
   -H "Authorization: Bearer $MINDCLOUD_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"arguments": {"channel": "C0123456789", "text": "Hello from an agent"}}'

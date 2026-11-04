@@ -83,7 +83,7 @@ curl -s "https://connect.mindcloud.co/v2/runs/{runId}/steps/{stepInstanceId}" ..
 curl -s "https://connect.mindcloud.co/v2/runs/{runId}/operations?actionStatus=error" ...  # per-record results
 ```
 
-**Build a workflow.** Every change goes to the workflow's draft; nothing runs until you publish. Draft writes take the draft's revision in `If-Match` and answer the next one in `meta.revision`; a stale revision answers `412` with the current one in `error.details.revision`.
+**Build a workflow.** Read the Workflow Building Guide first: the recommended path and what trips agents up (https://mindcloud.co/docs/api/rest/introduction/workflow-building-guide). Every change goes to the workflow's draft; nothing runs until you publish. Draft writes take the draft's revision in `If-Match` and answer the next one in `meta.revision` (the `ETag` header is the same value); a stale revision answers `412` with the current one in `error.details.revision`.
 
 ```bash
 # 1. Create it (starts disabled; "type": "function" makes one other workflows call)
@@ -98,10 +98,12 @@ curl -s "https://connect.mindcloud.co/v2/workflows/{workflowId}/definition" ...
 #    reference in the same body ({{ steps.<ref>.output }}); data.refs answers the id each got. All or nothing: a 400
 #    lists every problem in error.details.issues with its JSON Pointer. Leave a step out to remove it. Check a body
 #    first with POST .../definition/validate. Map code that reads a step created in the same call needs a second call:
-#    the input key ends in the new step's id, so set that code with PUT .../steps/{stepId}/configuration using the key
-#    data.inputKeys answers.
+#    the input key ends in the new step's id (its last four characters, in capitals), so add that Map step with its inputs and no code, then set its code with
+#    PUT .../steps/{stepId}/configuration using the key data.inputKeys answers. An app step that lists records reads one
+#    page (the action's default size) unless you set its pagination option: mode all reads every page, except on an
+#    action that pages by size only, which takes mode single with a larger size (the step schema lists its modes).
 curl -s -X PUT "https://connect.mindcloud.co/v2/workflows/{workflowId}/definition" ... \
-  -H 'If-Match: "{revision}"' -d '{"triggers": [{"ref": "hook", "app": "webhook"}], "steps": [{"ref": "users", "app": "slack", "action": "list-users"}, {"ref": "each", "app": "iterate", "configuration": {"arguments": {"source": "{{ steps.users.output }}"}}, "body": [{"ref": "dm", "app": "slack", "action": "send-message", "configuration": {"arguments": {"text": "Hi {{ steps.each.output[0].real_name }}"}}}]}]}'
+  -H 'If-Match: "{revision}"' -d '{"triggers": [{"ref": "hook", "app": "webhook"}], "steps": [{"ref": "users", "app": "slack", "action": "list-users"}, {"ref": "each", "app": "iterate", "configuration": {"arguments": {"source": "{{ steps.users.output }}"}}, "body": [{"ref": "dm", "app": "slack", "action": "send-user-message", "configuration": {"arguments": {"channel": "{slackUserId}", "text": "Hi {{ steps.each.output[0].real_name }}"}}}]}]}'
 
 # Or one change at a time, for small edits:
 
@@ -109,7 +111,7 @@ curl -s -X PUT "https://connect.mindcloud.co/v2/workflows/{workflowId}/definitio
 curl -s -X POST "https://connect.mindcloud.co/v2/workflows/{workflowId}/triggers" ... \
   -H 'If-Match: "{revision}"' -d '{"app": "schedule"}'
 curl -s -X POST "https://connect.mindcloud.co/v2/workflows/{workflowId}/steps" ... \
-  -H 'If-Match: "{revision}"' -d '{"app": "slack", "action": "send-message"}'
+  -H 'If-Match: "{revision}"' -d '{"app": "slack", "action": "send-channel-message"}'
 
 # Read what a step takes, then set it; values can reference a trigger's or an earlier step's output
 curl -s "https://connect.mindcloud.co/v2/workflows/{workflowId}/steps/{stepId}/schema" ...
@@ -170,7 +172,7 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | --- | --- | --- | --- |
 | [Get Workflow Definition](https://mindcloud.co/docs/api/rest/actions/get-workflow-definition) | GET `/v2/workflows/{workflowId}/definition` | `workflow:view` | Read a workflow's whole structure in one call: its properties, its triggers, and its steps as a tree in execution order. |
 | [Set Workflow Definition](https://mindcloud.co/docs/api/rest/actions/set-workflow-definition) | PUT `/v2/workflows/{workflowId}/definition` | `workflow:edit` | Set the workflow's whole draft in one call: the fastest way to build a workflow, and the one to use from an agent. |
-| [Validate Workflow Definition](https://mindcloud.co/docs/api/rest/actions/validate-workflow-definition) | POST `/v2/workflows/{workflowId}/definition/validate` | `workflow:edit` | Check a body for Set Workflow Definition without saving anything: it runs the same steps in a transaction that is always rolled back, so it answers exactly what the write would, including every problem with its JSON Pointer into the body. |
+| [Validate Workflow Definition](https://mindcloud.co/docs/api/rest/actions/validate-workflow-definition) | POST `/v2/workflows/{workflowId}/definition/validate` | `workflow:edit` | Check a body for Set Workflow Definition without saving anything: it runs the same steps in a transaction that is always rolled back, so it finds every problem the write would, each with its JSON Pointer into the body. |
 | [List Workflow Steps](https://mindcloud.co/docs/api/rest/actions/list-workflow-steps) | GET `/v2/workflows/{workflowId}/steps` | `workflow:view` | List a workflow's steps flat, in the order they run, with the number the editor shows and where each one sits. |
 | [Get Workflow Step](https://mindcloud.co/docs/api/rest/actions/get-workflow-step) | GET `/v2/workflows/{workflowId}/steps/{stepId}` | `workflow:view` | Read one step: what it runs, the number the editor shows, and where it sits in the workflow. |
 | [List Workflow Triggers](https://mindcloud.co/docs/api/rest/actions/list-workflow-triggers) | GET `/v2/workflows/{workflowId}/triggers` | `workflow:view` | List what starts a workflow. |
@@ -180,7 +182,7 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | [Get Workflow Step Configuration](https://mindcloud.co/docs/api/rest/actions/get-workflow-step-configuration) | GET `/v2/workflows/{workflowId}/steps/{stepId}/configuration` | `workflow:view` | Read how a step in the workflow's draft is set up: the arguments its action gets, nested as the action's schema nests them, with {{ steps.<stepId>.output... |
 | [Update Workflow Step Configuration](https://mindcloud.co/docs/api/rest/actions/update-workflow-step-configuration) | PUT `/v2/workflows/{workflowId}/steps/{stepId}/configuration` | `workflow:edit` | Change how a step in the workflow's draft is set up. |
 | [Validate Workflow Step Configuration](https://mindcloud.co/docs/api/rest/actions/validate-workflow-step-configuration) | POST `/v2/workflows/{workflowId}/steps/{stepId}/configuration/validate` | `workflow:view` | Send what you would send to Update Workflow Step Configuration and see what it would do: valid is false with every error in issues, or true with the configuration it would leave and the required values still missing. |
-| [Run Workflow Step Lookup](https://mindcloud.co/docs/api/rest/actions/run-workflow-step-lookup) | POST `/v2/workflows/{workflowId}/steps/{stepId}/lookups` | `workflow:edit` | List the choices of one dropdown of a step in the workflow's draft, or find the one you mean with search, exactly as the editor loads them: the app's fixed options, a preset list, or a read from the app with the step's connection at its app version. |
+| [Run Workflow Step Lookup](https://mindcloud.co/docs/api/rest/actions/run-workflow-step-lookup) | POST `/v2/workflows/{workflowId}/steps/{stepId}/lookups` | `workflow:edit` | List the choices of one dropdown of a step in the workflow's draft, or find the one you mean with q (or search), exactly as the editor loads them: the app's fixed options, a preset list, or a read from the app with the step's connection at its app version. |
 | [Test Workflow Step](https://mindcloud.co/docs/api/rest/actions/test-workflow-step) | POST `/v2/workflows/{workflowId}/steps/{stepId}/test` | `workflow:run`, `workflow:edit` | Run one step of the workflow's draft on its own, exactly as Run in the editor does: with its saved configuration and connection, the saved sample outputs of the steps it references, and real side effects (a create step creates). |
 | [Get Workflow Step Output](https://mindcloud.co/docs/api/rest/actions/get-workflow-step-output) | GET `/v2/workflows/{workflowId}/steps/{stepId}/output` | `workflow:view` | Read the sample output saved for a step in the workflow's draft, as the editor's Output tab shows it: its first records, how many there were, and the fields later steps can reference. |
 | [Update Workflow Step Output](https://mindcloud.co/docs/api/rest/actions/update-workflow-step-output) | PUT `/v2/workflows/{workflowId}/steps/{stepId}/output` | `workflow:edit` | Save a sample output for a step in the workflow's draft without running it, as Edit Step Output in the editor does. |
@@ -193,7 +195,7 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | [Get Workflow Trigger Configuration](https://mindcloud.co/docs/api/rest/actions/get-workflow-trigger-configuration) | GET `/v2/workflows/{workflowId}/triggers/{triggerId}/configuration` | `workflow:view` | Read how a trigger in the workflow's draft is set up: the arguments its action gets, nested as the action's schema nests them, with {{ steps.<stepId>.output... |
 | [Update Workflow Trigger Configuration](https://mindcloud.co/docs/api/rest/actions/update-workflow-trigger-configuration) | PUT `/v2/workflows/{workflowId}/triggers/{triggerId}/configuration` | `workflow:edit` | Change how a trigger in the workflow's draft is set up. |
 | [Validate Workflow Trigger Configuration](https://mindcloud.co/docs/api/rest/actions/validate-workflow-trigger-configuration) | POST `/v2/workflows/{workflowId}/triggers/{triggerId}/configuration/validate` | `workflow:view` | Send what you would send to Update Workflow Trigger Configuration and see what it would do: valid is false with every error in issues, or true with the configuration it would leave and the required values still missing. |
-| [Run Workflow Trigger Lookup](https://mindcloud.co/docs/api/rest/actions/run-workflow-trigger-lookup) | POST `/v2/workflows/{workflowId}/triggers/{triggerId}/lookups` | `workflow:edit` | List the choices of one dropdown of a trigger in the workflow's draft, or find the one you mean with search, exactly as the editor loads them: the app's fixed options, a preset list, or a read from the app with the trigger's connection at its app version. |
+| [Run Workflow Trigger Lookup](https://mindcloud.co/docs/api/rest/actions/run-workflow-trigger-lookup) | POST `/v2/workflows/{workflowId}/triggers/{triggerId}/lookups` | `workflow:edit` | List the choices of one dropdown of a trigger in the workflow's draft, or find the one you mean with q (or search), exactly as the editor loads them: the app's fixed options, a preset list, or a read from the app with the trigger's connection at its app version. |
 | [Listen Workflow Trigger](https://mindcloud.co/docs/api/rest/actions/listen-workflow-trigger) | POST `/v2/workflows/{workflowId}/triggers/{triggerId}/listen` | `workflow:edit` | Wait for a call to a Webhook trigger in the workflow's draft: send a request to the trigger's URL while this waits. |
 | [Delete Workflow Trigger](https://mindcloud.co/docs/api/rest/actions/delete-workflow-trigger) | DELETE `/v2/workflows/{workflowId}/triggers/{triggerId}` | `workflow:edit` | Remove a trigger from the workflow's draft. |
 | [Get Workflow Inputs](https://mindcloud.co/docs/api/rest/actions/get-workflow-inputs) | GET `/v2/workflows/{workflowId}/inputs` | `workflow:view` | Read what a run of the workflow takes, where the editor keeps it. |
