@@ -209,7 +209,7 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 
 | Endpoint | Request | Permission | What it does |
 | --- | --- | --- | --- |
-| [List Connections](https://mindcloud.co/docs/api/rest/actions/list-connections) | GET `/v2/connections` | `credential:view` | See every connection in your company and whether it still works, each app's default first. |
+| [List Connections](https://mindcloud.co/docs/api/rest/actions/list-connections) | GET `/v2/connections` | `credential:view` | See the connections in your company and whether they still work: shared ones and your own personal ones, each app's default first. |
 | [Get Connection](https://mindcloud.co/docs/api/rest/actions/get-connection) | GET `/v2/connections/{connectionId}` | `credential:view` | Check one connection's health, expiry, and metadata. |
 | [Test Connection](https://mindcloud.co/docs/api/rest/actions/test-connection) | POST `/v2/connections/{connectionId}/test` | `credential:edit` | Check a connection against the provider it signs into. |
 | [Delete Connection](https://mindcloud.co/docs/api/rest/actions/delete-connection) | DELETE `/v2/connections/{connectionId}` | `credential:delete` | Delete a connection, revoking it with the provider first when the app supports that. |

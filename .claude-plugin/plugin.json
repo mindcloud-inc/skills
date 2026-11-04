@@ -1,7 +1,7 @@
 {
   "name": "mindcloud-skills",
   "description": "Read and write data in 3,400+ business apps through the MindCloud Universal API, and build and manage MindCloud workflows, runs, connections, and keys.",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": {
     "name": "MindCloud",
     "url": "https://mindcloud.co"
