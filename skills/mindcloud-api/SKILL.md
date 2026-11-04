@@ -93,18 +93,29 @@ curl -s -X POST "https://connect.mindcloud.co/v2/workflows" \
 # 2. Read the draft's revision (data.revision)
 curl -s "https://connect.mindcloud.co/v2/workflows/{workflowId}/definition" ...
 
-# 3. Add a trigger (app: schedule, webhook, runWorkflow, or an app slug), then a step (app and action slugs from the Universal API's app and action search)
+# 3. Build it in one call: every trigger and step, nested as they run, with configurations. New ones take a ref you
+#    reference in the same body ({{ steps.<ref>.output }}); data.refs answers the id each got. All or nothing: a 400
+#    lists every problem in error.details.issues with its JSON Pointer. Leave a step out to remove it. Check a body
+#    first with POST .../definition/validate. Map code that reads a step created in the same call needs a second call:
+#    the input key ends in the new step's id, so set that code with PUT .../steps/{stepId}/configuration using the key
+#    data.inputKeys answers.
+curl -s -X PUT "https://connect.mindcloud.co/v2/workflows/{workflowId}/definition" ... \
+  -H 'If-Match: "{revision}"' -d '{"triggers": [{"ref": "hook", "app": "webhook"}], "steps": [{"ref": "users", "app": "slack", "action": "list-users"}, {"ref": "each", "app": "iterate", "configuration": {"arguments": {"source": "{{ steps.users.output }}"}}, "body": [{"ref": "dm", "app": "slack", "action": "send-message", "configuration": {"arguments": {"text": "Hi {{ steps.each.output[0].real_name }}"}}}]}]}'
+
+# Or one change at a time, for small edits:
+
+# Add a trigger (app: schedule, webhook, runWorkflow, or an app slug), then a step (app and action slugs from the Universal API's app and action search)
 curl -s -X POST "https://connect.mindcloud.co/v2/workflows/{workflowId}/triggers" ... \
   -H 'If-Match: "{revision}"' -d '{"app": "schedule"}'
 curl -s -X POST "https://connect.mindcloud.co/v2/workflows/{workflowId}/steps" ... \
   -H 'If-Match: "{revision}"' -d '{"app": "slack", "action": "send-message"}'
 
-# 4. Read what a step takes, then set it; values can reference a trigger's or an earlier step's output
+# Read what a step takes, then set it; values can reference a trigger's or an earlier step's output
 curl -s "https://connect.mindcloud.co/v2/workflows/{workflowId}/steps/{stepId}/schema" ...
 curl -s -X PUT "https://connect.mindcloud.co/v2/workflows/{workflowId}/steps/{stepId}/configuration" ... \
   -H 'If-Match: "{revision}"' -d '{"arguments": {"text": "New order {{ steps.<stepId>.output[0].id }}"}, "connection": {"mode": "connection", "connectionId": "{connectionId}"}}'
 
-# 5. Test a step (real side effects), check the draft, publish, then enable
+# 4. Test a step (real side effects), check the draft, publish, then enable
 curl -s -X POST "https://connect.mindcloud.co/v2/workflows/{workflowId}/steps/{stepId}/test" ...
 curl -s -X POST "https://connect.mindcloud.co/v2/workflows/{workflowId}/validate" ...
 curl -s -X POST "https://connect.mindcloud.co/v2/workflows/{workflowId}/publish" ... -H 'If-Match: "{revision}"' -d '{}'
@@ -157,6 +168,8 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | Endpoint | Request | Permission | What it does |
 | --- | --- | --- | --- |
 | [Get Workflow Definition](https://mindcloud.co/docs/api/rest/actions/get-workflow-definition) | GET `/v2/workflows/{workflowId}/definition` | `workflow:view` | Read a workflow's whole structure in one call: its properties, its triggers, and its steps as a tree in execution order. |
+| [Set Workflow Definition](https://mindcloud.co/docs/api/rest/actions/set-workflow-definition) | PUT `/v2/workflows/{workflowId}/definition` | `workflow:edit` | Set the workflow's whole draft in one call: the fastest way to build a workflow, and the one to use from an agent. |
+| [Validate Workflow Definition](https://mindcloud.co/docs/api/rest/actions/validate-workflow-definition) | POST `/v2/workflows/{workflowId}/definition/validate` | `workflow:edit` | Check a body for Set Workflow Definition without saving anything: it runs the same steps in a transaction that is always rolled back, so it answers exactly what the write would, including every problem with its JSON Pointer into the body. |
 | [List Workflow Steps](https://mindcloud.co/docs/api/rest/actions/list-workflow-steps) | GET `/v2/workflows/{workflowId}/steps` | `workflow:view` | List a workflow's steps flat, in the order they run, with the number the editor shows and where each one sits. |
 | [Get Workflow Step](https://mindcloud.co/docs/api/rest/actions/get-workflow-step) | GET `/v2/workflows/{workflowId}/steps/{stepId}` | `workflow:view` | Read one step: what it runs, the number the editor shows, and where it sits in the workflow. |
 | [List Workflow Triggers](https://mindcloud.co/docs/api/rest/actions/list-workflow-triggers) | GET `/v2/workflows/{workflowId}/triggers` | `workflow:view` | List what starts a workflow. |
