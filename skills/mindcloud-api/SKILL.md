@@ -262,7 +262,7 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 
 | Endpoint | Request | Permission | What it does |
 | --- | --- | --- | --- |
-| [List Companies](https://mindcloud.co/docs/api/rest/actions/list-companies) | GET `/v2/companies` | `company:view` | Find the organization to work in: every organization your API key can act in, searchable by name (name[contains]=acme), with how the key reaches it. |
+| [List Companies](https://mindcloud.co/docs/api/rest/actions/list-companies) | GET `/v2/companies` | `company:view` | Find the organization to work in: every organization your API key can act in, searchable with q=acme (any part of the name, or the exact id), with how the key reaches it. |
 | [Get Company](https://mindcloud.co/docs/api/rest/actions/get-company) | GET `/v2/companies/{companyId}` | `company:view` | See your company in full: its region, parent organization, how many members and roles it has, and whether domain discovery and Embedded are on. |
 | [Update Company](https://mindcloud.co/docs/api/rest/actions/update-company) | PUT `/v2/companies/{companyId}` | `company:edit` | Change your company name, description, timezone, or logo, or turn domain discovery on or off. |
 | [Leave Parent Organization](https://mindcloud.co/docs/api/rest/actions/leave-parent) | POST `/v2/companies/{companyId}/leave-parent` | `company:parent:manage` | Stop being a child organization. |
