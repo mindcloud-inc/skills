@@ -407,7 +407,7 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | [Update Analytics Folder Share](https://mindcloud.co/docs/api/rest/actions/update-analytics-folder-share) | PUT `/v2/analytics/folders/{folderId}/shares/{shareId}` | `analytics:page:create` | Change a share's permission between view and edit. |
 | [Delete Analytics Folder Share](https://mindcloud.co/docs/api/rest/actions/delete-analytics-folder-share) | DELETE `/v2/analytics/folders/{folderId}/shares/{shareId}` | `analytics:page:create` | Take a share away from the folder and every page inside it. |
 
-### Analytics Folders
+### Analytics Library
 
 | Endpoint | Request | Permission | What it does |
 | --- | --- | --- | --- |
@@ -415,19 +415,9 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | [Create Analytics Folder](https://mindcloud.co/docs/api/rest/actions/create-analytics-folder) | POST `/v2/analytics/folders` | `analytics:page:edit` | Make a folder in your Analytics sidebar, at the top of Pages, Reports or Shared with me, or inside another folder. |
 | [Update Analytics Folder](https://mindcloud.co/docs/api/rest/actions/update-analytics-folder) | PUT `/v2/analytics/folders/{folderId}` | `analytics:page:edit` | Rename, move, theme or pause one of your Analytics folders. |
 | [Delete Analytics Folder](https://mindcloud.co/docs/api/rest/actions/delete-analytics-folder) | DELETE `/v2/analytics/folders/{folderId}` | `analytics:page:edit` | Delete one of your Analytics folders. |
-
-### Analytics Themes
-
-| Endpoint | Request | Permission | What it does |
-| --- | --- | --- | --- |
 | [List Analytics Themes](https://mindcloud.co/docs/api/rest/actions/list-analytics-themes) | GET `/v2/analytics/themes` | `analytics:page:view` | See your organization's Analytics themes: fonts, colors, chart and panel styling a page or a folder can wear. |
 | [Create Analytics Theme](https://mindcloud.co/docs/api/rest/actions/create-analytics-theme) | POST `/v2/analytics/themes` | `analytics:page:create` | Make a theme your organization can put on any page or folder. |
 | [Update Analytics Theme](https://mindcloud.co/docs/api/rest/actions/update-analytics-theme) | PUT `/v2/analytics/themes/{themeId}` | `analytics:page:create` | Change a theme. |
-
-### Analytics Templates
-
-| Endpoint | Request | Permission | What it does |
-| --- | --- | --- | --- |
 | [List Analytics Templates](https://mindcloud.co/docs/api/rest/actions/list-analytics-templates) | GET `/v2/analytics/templates` | `analytics:page:view` | Browse ready-made Analytics pages and bundles you can install: your organization's, ones shared with it, and MindCloud's public library. |
 | [Get Analytics Template Install Plan](https://mindcloud.co/docs/api/rest/actions/get-analytics-template-install-plan) | GET `/v2/analytics/templates/{templateId}/install-plan` | `analytics:page:view` | See what a template needs before you install it: the apps to connect, the connections you can pick for each, and, for a bundle, its pages. |
 | [Install Analytics Template](https://mindcloud.co/docs/api/rest/actions/install-analytics-template) | POST `/v2/analytics/templates/{templateId}/install` | `analytics:page:create` | Install a template as your own page, or a bundle as pages in a new folder. |
