@@ -320,6 +320,118 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | [Get Daily Usage](https://mindcloud.co/docs/api/rest/actions/get-usage-daily) | GET `/v2/usage/daily` | `subscription:view` | See how your task usage trends day by day, up to 45 days at a time. |
 | [Get Usage by Workflow](https://mindcloud.co/docs/api/rest/actions/get-usage-workflows) | GET `/v2/usage/workflows` | `subscription:view` | Find out which workflows use the most tasks, highest first, and how embedded usage splits across [installations](/docs/embedded/getting-started/mindcloud-embedded-overview#installation). |
 
+### Analytics Pages
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [List Analytics Pages](https://mindcloud.co/docs/api/rest/actions/list-analytics-pages) | GET `/v2/analytics/pages` | `analytics:page:view` | See every Analytics page the key's creator can open, their own and the ones shared with them. |
+| [Get Analytics Page](https://mindcloud.co/docs/api/rest/actions/get-analytics-page) | GET `/v2/analytics/pages/{pageId}` | `analytics:page:view` | Read a page: its settings, variables (filters), tabs, and its panels with their places on the grid. |
+| [Create Analytics Page](https://mindcloud.co/docs/api/rest/actions/create-analytics-page) | POST `/v2/analytics/pages` | `analytics:page:create` | Make a new page or report. |
+| [Update Analytics Page](https://mindcloud.co/docs/api/rest/actions/update-analytics-page) | PUT `/v2/analytics/pages/{pageId}` | `analytics:page:edit` | Rename a page, change its icon, display, theme or style, pause or resume it, or file it in a folder. |
+| [Convert Analytics Page](https://mindcloud.co/docs/api/rest/actions/convert-analytics-page) | POST `/v2/analytics/pages/{pageId}/convert` | `analytics:page:edit` | Make a page a subpage of the page whose click opens it, or a subpage an ordinary page again. |
+| [Duplicate Analytics Page](https://mindcloud.co/docs/api/rest/actions/duplicate-analytics-page) | POST `/v2/analytics/pages/{pageId}/duplicate` | `analytics:page:create` | Copy one of your pages, panels and settings included, as a new draft beside the original. |
+| [Delete Analytics Page](https://mindcloud.co/docs/api/rest/actions/delete-analytics-page) | DELETE `/v2/analytics/pages/{pageId}` | `analytics:page:edit` | Delete one of your pages. |
+| [Set Analytics Page Variables](https://mindcloud.co/docs/api/rest/actions/set-analytics-page-variables) | PUT `/v2/analytics/pages/{pageId}/variables` | `analytics:page:edit` | Declare a page's variables: the filters its panels read as $name in their queries. |
+| [Set Analytics Page Tabs](https://mindcloud.co/docs/api/rest/actions/set-analytics-page-tabs) | PUT `/v2/analytics/pages/{pageId}/tabs` | `analytics:page:edit` | Split a page into tabs, rename or reorder them, or turn tabs off. |
+| [Update Analytics Page Layout](https://mindcloud.co/docs/api/rest/actions/update-analytics-page-layout) | PUT `/v2/analytics/pages/{pageId}/layout` | `analytics:page:edit` | Arrange panels on the page grid (12 columns) and move them between tabs. |
+| [Request Analytics Page Access](https://mindcloud.co/docs/api/rest/actions/request-analytics-page-access) | POST `/v2/analytics/pages/{pageId}/access-requests` | `analytics:page:view` | Ask the owner of a page you cannot open to share it. |
+| [Get Analytics Page Definition](https://mindcloud.co/docs/api/rest/actions/get-analytics-page-definition) | GET `/v2/analytics/pages/{pageId}/definition` | `analytics:page:view` | Read a page's whole draft as one document, in the shape Set Analytics Page Definition takes: change it and send it back. |
+| [Set Analytics Page Definition](https://mindcloud.co/docs/api/rest/actions/set-analytics-page-definition) | PUT `/v2/analytics/pages/{pageId}/definition` | `analytics:page:edit` | Set a page's whole draft in one call: the fastest way to build a page, and the one to use from an agent. |
+| [Validate Analytics Page Definition](https://mindcloud.co/docs/api/rest/actions/validate-analytics-page-definition) | POST `/v2/analytics/pages/{pageId}/definition/validate` | `analytics:page:edit` | Check a body for Set Analytics Page Definition without saving anything. |
+
+### Analytics Versions
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [List Analytics Page Edits](https://mindcloud.co/docs/api/rest/actions/list-analytics-page-edits) | GET `/v2/analytics/pages/{pageId}/edits` | `analytics:page:view` | See a page's draft steps since its last publish, newest first, with who made each and whether it is undone. |
+| [Undo Analytics Page](https://mindcloud.co/docs/api/rest/actions/undo-analytics-page) | POST `/v2/analytics/pages/{pageId}/undo` | `analytics:page:edit` | Undo your last draft step on a page. |
+| [Redo Analytics Page](https://mindcloud.co/docs/api/rest/actions/redo-analytics-page) | POST `/v2/analytics/pages/{pageId}/redo` | `analytics:page:edit` | Redo your last undone draft step on a page, or bring back a specific undone step by its id from List Analytics Page Edits. |
+| [Publish Analytics Page](https://mindcloud.co/docs/api/rest/actions/publish-analytics-page) | POST `/v2/analytics/pages/{pageId}/publish` | `analytics:page:edit` | Publish the draft: it becomes a new numbered version and what viewers see. |
+| [Discard Analytics Page Draft](https://mindcloud.co/docs/api/rest/actions/discard-analytics-page-draft) | POST `/v2/analytics/pages/{pageId}/discard-draft` | `analytics:page:edit` | Throw away the draft and go back to the published version. |
+| [List Analytics Page Versions](https://mindcloud.co/docs/api/rest/actions/list-analytics-page-versions) | GET `/v2/analytics/pages/{pageId}/versions` | `analytics:page:view` | See a page's version history, newest first. |
+| [Restore Analytics Page Version](https://mindcloud.co/docs/api/rest/actions/restore-analytics-page-version) | POST `/v2/analytics/pages/{pageId}/versions/{versionId}/restore` | `analytics:page:edit` | Bring an earlier version back as the draft. |
+| [Publish Analytics Page Version](https://mindcloud.co/docs/api/rest/actions/publish-analytics-page-version) | POST `/v2/analytics/pages/{pageId}/versions/{versionId}/publish` | `analytics:page:edit` | Roll viewers back (or forward) to another version. |
+| [Update Analytics Page Version](https://mindcloud.co/docs/api/rest/actions/update-analytics-page-version) | PUT `/v2/analytics/pages/{pageId}/versions/{versionId}` | `analytics:page:edit` | Give a version a name or notes so its history reads well. |
+
+### Analytics Panels
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [Create Analytics Panel](https://mindcloud.co/docs/api/rest/actions/create-analytics-panel) | POST `/v2/analytics/pages/{pageId}/panels` | `analytics:page:edit` | Add a blank panel to a page you own, or copy one with fromPanelId. |
+| [Get Analytics Panel](https://mindcloud.co/docs/api/rest/actions/get-analytics-panel) | GET `/v2/analytics/pages/{pageId}/panels/{panelId}` | `analytics:page:view` | Read a panel's whole setup in the shape Update Analytics Panel takes back: change what you need and send those fields. |
+| [Update Analytics Panel](https://mindcloud.co/docs/api/rest/actions/update-analytics-panel) | PUT `/v2/analytics/pages/{pageId}/panels/{panelId}` | `analytics:page:edit` | Set what a panel shows: its sources and their SQL, the transform, the display type and its settings, columns, formats, click wiring and its place on the grid. |
+| [Delete Analytics Panel](https://mindcloud.co/docs/api/rest/actions/delete-analytics-panel) | DELETE `/v2/analytics/pages/{pageId}/panels/{panelId}` | `analytics:page:edit` | Delete a panel from a page you own. |
+| [Get Analytics Panel Output](https://mindcloud.co/docs/api/rest/actions/get-analytics-panel-output) | GET `/v2/analytics/pages/{pageId}/panels/{panelId}/output` | `analytics:page:view` | See what a panel produces: its status, any failure message, and its rows, a window at a time. |
+| [Preview Analytics Panel Transform](https://mindcloud.co/docs/api/rest/actions/preview-analytics-panel-transform) | POST `/v2/analytics/pages/{pageId}/panels/{panelId}/transform-preview` | `analytics:page:edit` | Try transform code on a panel's sources before you save it with Update Analytics Panel. |
+| [Preview Analytics Panel Drill-Down](https://mindcloud.co/docs/api/rest/actions/preview-analytics-panel-drill-down) | POST `/v2/analytics/pages/{pageId}/panels/{panelId}/drill-down-preview` | `analytics:page:view` | See what a drill-down panel shows for one click: pass the clicked row's values its SQL reads as $params. |
+| [Create Analytics Subpage](https://mindcloud.co/docs/api/rest/actions/create-analytics-subpage) | POST `/v2/analytics/pages/{pageId}/panels/{panelId}/subpages` | `analytics:page:create` | Make a detail page that opens when a row or value of this panel is clicked. |
+
+### Analytics Data Sources
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [List Analytics Data Sources](https://mindcloud.co/docs/api/rest/actions/list-analytics-data-sources) | GET `/v2/analytics/data-sources` | `analytics:page:view` | See the data sources of the key's creator: the app data, merges and tables their Analytics panels read. |
+| [Create Analytics Data Source](https://mindcloud.co/docs/api/rest/actions/create-analytics-data-source) | POST `/v2/analytics/data-sources` | `analytics:page:create` | Create a data source, owned by the key's creator, for Analytics panels to read. |
+| [Get Analytics Data Source](https://mindcloud.co/docs/api/rest/actions/get-analytics-data-source) | GET `/v2/analytics/data-sources/{dataSourceId}` | `analytics:page:view` | Get one of the creator's data sources in full: the app, action, connection, arguments, options and query a sync or live source fetches with; the inputs and code of a merge; the data a fixed source holds; its refresh schedule and incremental refreshes; and its latest fetch. |
+| [Update Analytics Data Source](https://mindcloud.co/docs/api/rest/actions/update-analytics-data-source) | PUT `/v2/analytics/data-sources/{dataSourceId}` | `analytics:page:create` | Change one of the creator's data sources. |
+| [Delete Analytics Data Source](https://mindcloud.co/docs/api/rest/actions/delete-analytics-data-source) | DELETE `/v2/analytics/data-sources/{dataSourceId}` | `analytics:page:create` | Delete one of the creator's data sources and its stored data. |
+| [Fetch Analytics Data Source](https://mindcloud.co/docs/api/rest/actions/fetch-analytics-data-source) | POST `/v2/analytics/data-sources/{dataSourceId}/fetch` | `analytics:page:create` | Start a fresh fetch of a data source now, without changing it, as Refresh does in the app. |
+| [Get Analytics Data Source Result](https://mindcloud.co/docs/api/rest/actions/get-analytics-data-source-result) | GET `/v2/analytics/data-sources/{dataSourceId}/result` | `analytics:page:view` | Read a data source's stored rows and how its last fetch went. |
+| [Query Analytics Data Source](https://mindcloud.co/docs/api/rest/actions/query-analytics-data-source) | POST `/v2/analytics/data-sources/{dataSourceId}/query` | `analytics:page:view` | Run one read-only SQL statement (DuckDB) over a data source's stored rows, read as `src`, to explore them before you build a panel: counts, distinct values, date ranges. |
+| [Preview Analytics Merge](https://mindcloud.co/docs/api/rest/actions/preview-analytics-merge) | POST `/v2/analytics/data-sources/merge-preview` | `analytics:page:create` | Try a merge before you save it, as the app's merge editor previews one: send the same dataSources and transformCode Create Analytics Data Source takes for a merge source. |
+| [Get Analytics Data Source Table](https://mindcloud.co/docs/api/rest/actions/get-analytics-data-source-table) | GET `/v2/analytics/data-sources/{dataSourceId}/table` | `analytics:page:view` | Read one of the creator's fixed sources as a table: its columns with their types, a window of its rows in order (each keyed by column; a row's index is offset plus its place), and the revision, also in the ETag header. |
+| [Update Analytics Data Source Table](https://mindcloud.co/docs/api/rest/actions/update-analytics-data-source-table) | PUT `/v2/analytics/data-sources/{dataSourceId}/table` | `analytics:page:create` | Change some of a fixed source's table without sending the rest, then save it, as Save in the app's Edit table does: the panels and merges that read it follow. |
+
+### Analytics Publications
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [List Analytics Publications](https://mindcloud.co/docs/api/rest/actions/list-analytics-publications) | GET `/v2/analytics/pages/{pageId}/publications` | `analytics:page:view` | See a page's publications: who each one sends to, where, and when it sends next. |
+| [Create Analytics Publication](https://mindcloud.co/docs/api/rest/actions/create-analytics-publication) | POST `/v2/analytics/pages/{pageId}/publications` | `analytics:page:create` | Send a page on a schedule. |
+| [Update Analytics Publication](https://mindcloud.co/docs/api/rest/actions/update-analytics-publication) | PUT `/v2/analytics/pages/{pageId}/publications/{publicationId}` | `analytics:page:create` | Change a publication or turn it on or off. |
+| [Delete Analytics Publication](https://mindcloud.co/docs/api/rest/actions/delete-analytics-publication) | DELETE `/v2/analytics/pages/{pageId}/publications/{publicationId}` | `analytics:page:create` | Stop a publication for good. |
+| [Send Analytics Publication](https://mindcloud.co/docs/api/rest/actions/send-analytics-publication) | POST `/v2/analytics/pages/{pageId}/publications/{publicationId}/send` | `analytics:page:create` | Send a publication right now, outside its schedule. |
+| [List Analytics Publication Runs](https://mindcloud.co/docs/api/rest/actions/list-analytics-publication-runs) | GET `/v2/analytics/pages/{pageId}/publications/{publicationId}/runs` | `analytics:page:view` | See a publication's delivery history, newest first. |
+
+### Analytics Sharing
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [List Analytics Page Shares](https://mindcloud.co/docs/api/rest/actions/list-analytics-page-shares) | GET `/v2/analytics/pages/{pageId}/shares` | `analytics:page:view` | See who can open a page and who can edit it. |
+| [Create Analytics Page Share](https://mindcloud.co/docs/api/rest/actions/create-analytics-page-share) | POST `/v2/analytics/pages/{pageId}/shares` | `analytics:page:edit` | Share a page with one target. |
+| [Update Analytics Page Share](https://mindcloud.co/docs/api/rest/actions/update-analytics-page-share) | PUT `/v2/analytics/pages/{pageId}/shares/{shareId}` | `analytics:page:edit` | Change a share's permission between view and edit. |
+| [Delete Analytics Page Share](https://mindcloud.co/docs/api/rest/actions/delete-analytics-page-share) | DELETE `/v2/analytics/pages/{pageId}/shares/{shareId}` | `analytics:page:edit` | Take a share away. |
+| [Resend Analytics Page Share](https://mindcloud.co/docs/api/rest/actions/resend-analytics-page-share) | POST `/v2/analytics/pages/{pageId}/shares/{shareId}/resend` | `analytics:page:edit` | Send a guest, someone outside your organization, a new email with a fresh link to the page. |
+| [List Analytics Folder Shares](https://mindcloud.co/docs/api/rest/actions/list-analytics-folder-shares) | GET `/v2/analytics/folders/{folderId}/shares` | `analytics:page:view` | See who a folder is shared with. |
+| [Create Analytics Folder Share](https://mindcloud.co/docs/api/rest/actions/create-analytics-folder-share) | POST `/v2/analytics/folders/{folderId}/shares` | `analytics:page:create` | Share a folder with one target: every page in it, and in its subfolders, is shared with them too. |
+| [Update Analytics Folder Share](https://mindcloud.co/docs/api/rest/actions/update-analytics-folder-share) | PUT `/v2/analytics/folders/{folderId}/shares/{shareId}` | `analytics:page:create` | Change a share's permission between view and edit. |
+| [Delete Analytics Folder Share](https://mindcloud.co/docs/api/rest/actions/delete-analytics-folder-share) | DELETE `/v2/analytics/folders/{folderId}/shares/{shareId}` | `analytics:page:create` | Take a share away from the folder and every page inside it. |
+
+### Analytics Folders
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [List Analytics Folders](https://mindcloud.co/docs/api/rest/actions/list-analytics-folders) | GET `/v2/analytics/folders` | `analytics:page:view` | See the folders in your Analytics sidebar: your pages and reports, and the pages others shared with you, organized as you filed them. |
+| [Create Analytics Folder](https://mindcloud.co/docs/api/rest/actions/create-analytics-folder) | POST `/v2/analytics/folders` | `analytics:page:edit` | Make a folder in your Analytics sidebar, at the top of Pages, Reports or Shared with me, or inside another folder. |
+| [Update Analytics Folder](https://mindcloud.co/docs/api/rest/actions/update-analytics-folder) | PUT `/v2/analytics/folders/{folderId}` | `analytics:page:edit` | Rename, move, theme or pause one of your Analytics folders. |
+| [Delete Analytics Folder](https://mindcloud.co/docs/api/rest/actions/delete-analytics-folder) | DELETE `/v2/analytics/folders/{folderId}` | `analytics:page:edit` | Delete one of your Analytics folders. |
+
+### Analytics Themes
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [List Analytics Themes](https://mindcloud.co/docs/api/rest/actions/list-analytics-themes) | GET `/v2/analytics/themes` | `analytics:page:view` | See your organization's Analytics themes: fonts, colors, chart and panel styling a page or a folder can wear. |
+| [Create Analytics Theme](https://mindcloud.co/docs/api/rest/actions/create-analytics-theme) | POST `/v2/analytics/themes` | `analytics:page:create` | Make a theme your organization can put on any page or folder. |
+| [Update Analytics Theme](https://mindcloud.co/docs/api/rest/actions/update-analytics-theme) | PUT `/v2/analytics/themes/{themeId}` | `analytics:page:create` | Change a theme. |
+
+### Analytics Templates
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [List Analytics Templates](https://mindcloud.co/docs/api/rest/actions/list-analytics-templates) | GET `/v2/analytics/templates` | `analytics:page:view` | Browse ready-made Analytics pages and bundles you can install: your organization's, ones shared with it, and MindCloud's public library. |
+| [Get Analytics Template Install Plan](https://mindcloud.co/docs/api/rest/actions/get-analytics-template-install-plan) | GET `/v2/analytics/templates/{templateId}/install-plan` | `analytics:page:view` | See what a template needs before you install it: the apps to connect, the connections you can pick for each, and, for a bundle, its pages. |
+| [Install Analytics Template](https://mindcloud.co/docs/api/rest/actions/install-analytics-template) | POST `/v2/analytics/templates/{templateId}/install` | `analytics:page:create` | Install a template as your own page, or a bundle as pages in a new folder. |
+
 <!-- END GENERATED ENDPOINT REFERENCE -->
 
 ## Errors
