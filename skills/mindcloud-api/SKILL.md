@@ -258,6 +258,19 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | [Delete Role](https://mindcloud.co/docs/api/rest/actions/delete-role) | DELETE `/v2/roles/{roleId}` | `role:manage` | Delete a custom role that no member holds any more. |
 | [List Permissions](https://mindcloud.co/docs/api/rest/actions/list-permissions) | GET `/v2/permissions` | Any key | See every permission you can build a role or an API key from, and which of them a custom role may carry. |
 
+### Teams
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [List Teams](https://mindcloud.co/docs/api/rest/actions/list-teams) | GET `/v2/teams` | `member:view` | See the teams in your company and who is on each one. |
+| [Get Team](https://mindcloud.co/docs/api/rest/actions/get-team) | GET `/v2/teams/{teamId}` | `member:view` | See one team and who is on it. |
+| [Create Team](https://mindcloud.co/docs/api/rest/actions/create-team) | POST `/v2/teams` | `role:manage` | Create a team, then add people with Add Team Member and share connections with it. |
+| [Update Team](https://mindcloud.co/docs/api/rest/actions/update-team) | PUT `/v2/teams/{teamId}` | `role:manage` | Rename a team. |
+| [Delete Team](https://mindcloud.co/docs/api/rest/actions/delete-team) | DELETE `/v2/teams/{teamId}` | `role:manage` | Delete a team. |
+| [List Team Members](https://mindcloud.co/docs/api/rest/actions/list-team-members) | GET `/v2/teams/{teamId}/members` | `member:view` | See who is on a team, with their name, email, and role. |
+| [Add Team Member](https://mindcloud.co/docs/api/rest/actions/add-team-member) | POST `/v2/teams/{teamId}/members` | `role:manage` | Put someone on a team. |
+| [Remove Team Member](https://mindcloud.co/docs/api/rest/actions/remove-team-member) | DELETE `/v2/teams/{teamId}/members/{userId}` | `role:manage` | Take someone off a team. |
+
 ### Company
 
 | Endpoint | Request | Permission | What it does |
@@ -294,8 +307,8 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | [Get Member Capabilities](https://mindcloud.co/docs/api/rest/actions/get-member-capabilities) | GET `/v2/members/{userId}/capabilities` | `member:view` | See what Cirra lets one member do (web search, files, shell, and each app) and whether their role, their own choices, or the default decided it. |
 | [Get Role Capabilities](https://mindcloud.co/docs/api/rest/actions/get-role-capabilities) | GET `/v2/roles/{roleId}/capabilities` | `member:view` | See what a role lets its members do in Cirra: web search, files, shell commands, and each app, model, or action. |
 | [Update Role Capabilities](https://mindcloud.co/docs/api/rest/actions/update-role-capabilities) | PUT `/v2/roles/{roleId}/capabilities` | `role:manage` | Allow or deny what a role's members may do in Cirra, down to a single app action. |
-| [Get Connection Roles](https://mindcloud.co/docs/api/rest/actions/get-connection-roles) | GET `/v2/connections/{connectionId}/roles` | `credential:view` | See which roles can use a shared connection when Cirra runs app actions. |
-| [Update Connection Roles](https://mindcloud.co/docs/api/rest/actions/update-connection-roles) | PUT `/v2/connections/{connectionId}/roles` | `role:manage` | Limit a shared connection to certain roles, or open it to every member with an empty list. |
+| [Get Connection Shares](https://mindcloud.co/docs/api/rest/actions/get-connection-shares) | GET `/v2/connections/{connectionId}/shares` | `role:manage` | See who can use a shared connection when Cirra runs app actions, and what each of them may do with it. |
+| [Update Connection Shares](https://mindcloud.co/docs/api/rest/actions/update-connection-shares) | PUT `/v2/connections/{connectionId}/shares` | `role:manage` | Choose who can use a shared connection in Cirra and what they may do with it: everyone in the organization, roles, and teams, each at its own access level. |
 | [List Platforms](https://mindcloud.co/docs/api/rest/actions/list-platforms) | GET `/v2/platforms` | `company:view` | See how people reach Cirra from Teams and Slack, and which roles they get. |
 | [Get Platform](https://mindcloud.co/docs/api/rest/actions/get-platform) | GET `/v2/platforms/{platformId}` | `company:view` | See the sign-in settings for Teams or Slack. |
 | [Update Platform](https://mindcloud.co/docs/api/rest/actions/update-platform) | PUT `/v2/platforms/{platformId}` | `company:edit` | Set the email domains, guest access, automatic accounts, and group-to-role mappings for Teams or Slack sign-in. |
