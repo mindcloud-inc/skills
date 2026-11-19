@@ -427,6 +427,20 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | [Update Analytics Folder Share](https://mindcloud.co/docs/api/rest/actions/update-analytics-folder-share) | PUT `/v2/analytics/folders/{folderId}/shares/{shareId}` | `analytics:page:create` | Change a share's permission between view and edit. |
 | [Delete Analytics Folder Share](https://mindcloud.co/docs/api/rest/actions/delete-analytics-folder-share) | DELETE `/v2/analytics/folders/{folderId}/shares/{shareId}` | `analytics:page:create` | Take a share away from the folder and every page inside it. |
 
+### Analytics Embeds
+
+| Endpoint | Request | Permission | What it does |
+| --- | --- | --- | --- |
+| [List Analytics Embeds](https://mindcloud.co/docs/api/rest/actions/list-analytics-embeds) | GET `/v2/analytics/embeds` | `analytics:page:view` | See the pages and panels you show on other sites, as the app's Embedded Analytics lists them: what each shows, whether it is on, its look, and where it was viewed in the last 30 days. |
+| [Get Analytics Embed](https://mindcloud.co/docs/api/rest/actions/get-analytics-embed) | GET `/v2/analytics/embeds/{embedId}` | `analytics:page:view` | Get one embed: what it shows, whether it is on, its look, and its views. |
+| [Create Analytics Embed](https://mindcloud.co/docs/api/rest/actions/create-analytics-embed) | POST `/v2/analytics/embeds` | `analytics:page:edit` | Show a page, or one of its panels, on another site, such as your own product or a partner portal. |
+| [Update Analytics Embed](https://mindcloud.co/docs/api/rest/actions/update-analytics-embed) | PUT `/v2/analytics/embeds/{embedId}` | `analytics:page:edit` | Rename an embed or change its look. |
+| [Activate Analytics Embed](https://mindcloud.co/docs/api/rest/actions/activate-analytics-embed) | POST `/v2/analytics/embeds/{embedId}/activate` | `analytics:page:edit` | Turn an embed on, then get its link with Get Analytics Embed Link. |
+| [Get Analytics Embed Link](https://mindcloud.co/docs/api/rest/actions/get-analytics-embed-link) | GET `/v2/analytics/embeds/{embedId}/link` | `analytics:page:edit` | Get the link to install an active embed: put url in an iframe on your site. |
+| [Rotate Analytics Embed Link](https://mindcloud.co/docs/api/rest/actions/rotate-analytics-embed-link) | POST `/v2/analytics/embeds/{embedId}/rotate-link` | `analytics:page:edit` | Replace an embed's link, for instance when it reached someone it should not have. |
+| [Deactivate Analytics Embed](https://mindcloud.co/docs/api/rest/actions/deactivate-analytics-embed) | POST `/v2/analytics/embeds/{embedId}/deactivate` | `analytics:page:edit` | Stop showing an embed everywhere it is installed. |
+| [Revoke Analytics Embed](https://mindcloud.co/docs/api/rest/actions/revoke-analytics-embed) | POST `/v2/analytics/embeds/{embedId}/revoke` | `analytics:page:edit` | Retire an embed for good. |
+
 ### Analytics Library
 
 | Endpoint | Request | Permission | What it does |
