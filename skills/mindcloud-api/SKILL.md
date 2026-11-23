@@ -165,6 +165,8 @@ Each endpoint links to its full docs: parameters, body, response fields, and err
 | [List Run Operations](https://mindcloud.co/docs/api/rest/actions/list-run-operations) | GET `/v2/runs/{runId}/operations` | `log:view` | See every record a run created or updated, and every error or warning it hit. |
 | [List Workflow Operations](https://mindcloud.co/docs/api/rest/actions/list-workflow-operations) | GET `/v2/workflows/{workflowId}/operations` | `log:view` | Monitor record-level errors across every retained run of a workflow. |
 | [List Operations](https://mindcloud.co/docs/api/rest/actions/list-operations) | GET `/v2/operations` | `log:view` | Monitor record-level errors across workflows in one organization. |
+| [List Failed Runs](https://mindcloud.co/docs/api/rest/actions/list-failed-runs) | GET `/v2/failed-runs` | `log:view` | Find every run that failed, across all workflows, in one call: when it ran, which step it stopped at (activeStepId) and the error (summary). |
+| [List Workflow Activity](https://mindcloud.co/docs/api/rest/actions/list-workflow-activity) | GET `/v2/workflow-activity` | `log:view` | See what every workflow did each day in one call: how many times it ran, how many runs failed, and how many records it created, updated, deleted and read. |
 | [List Run Steps](https://mindcloud.co/docs/api/rest/actions/list-run-steps) | GET `/v2/runs/{runId}/steps` | `log:view` | See which steps a run executed and whether each one succeeded, without downloading any payloads. |
 | [Get a Run Step](https://mindcloud.co/docs/api/rest/actions/get-run-step) | GET `/v2/runs/{runId}/steps/{stepInstanceId}` | `log:view` | Inspect one step of a run: the exact data it received and the exact data it returned. |
 
